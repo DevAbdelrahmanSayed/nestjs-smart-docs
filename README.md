@@ -1,8 +1,8 @@
-# @devabdelrahmansayed/nestjs-auto-docs
+# nestjs-smart-docs
 
 > Automatic API documentation generator for NestJS applications with zero configuration required.
 
-[![npm version](https://img.shields.io/npm/v/@devabdelrahmansayed/nestjs-auto-docs.svg)](https://www.npmjs.com/package/@devabdelrahmansayed/nestjs-auto-docs)
+[![npm version](https://img.shields.io/npm/v/nestjs-smart-docs.svg)](https://www.npmjs.com/package/nestjs-smart-docs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Why This Package?
@@ -28,7 +28,7 @@ Stop wasting time writing decorators for every endpoint. This package automatica
 ## Installation
 
 ```bash
-npm install @devabdelrahmansayed/nestjs-auto-docs
+npm install nestjs-smart-docs
 ```
 
 ## Quick Start
@@ -37,7 +37,7 @@ npm install @devabdelrahmansayed/nestjs-auto-docs
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { AutoDocsModule } from '@devabdelrahmansayed/nestjs-auto-docs';
+import { AutoDocsModule } from 'nestjs-smart-docs';
 
 @Module({
   imports: [
@@ -259,7 +259,7 @@ This information appears in the generated documentation automatically.
 
 ## Comparison with Other Tools
 
-| Feature | @devabdelrahmansayed/nestjs-auto-docs | @nestjs/swagger | nest-scramble |
+| Feature | nestjs-smart-docs | @nestjs/swagger | nest-scramble |
 |---------|---------------------------|-----------------|---------------|
 | Zero decorators | ✅ | ❌ | ✅ |
 | Auto-categorization | ✅ | ❌ | ❌ |
