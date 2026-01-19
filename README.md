@@ -1,8 +1,8 @@
-# @corteksa/nestjs-auto-docs
+# @devabdelrahmansayed/nestjs-auto-docs
 
 > Automatic API documentation generator for NestJS applications with zero configuration required.
 
-[![npm version](https://img.shields.io/npm/v/@corteksa/nestjs-auto-docs.svg)](https://www.npmjs.com/package/@corteksa/nestjs-auto-docs)
+[![npm version](https://img.shields.io/npm/v/@devabdelrahmansayed/nestjs-auto-docs.svg)](https://www.npmjs.com/package/@devabdelrahmansayed/nestjs-auto-docs)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Why This Package?
@@ -28,7 +28,7 @@ Stop wasting time writing decorators for every endpoint. This package automatica
 ## Installation
 
 ```bash
-npm install @corteksa/nestjs-auto-docs
+npm install @devabdelrahmansayed/nestjs-auto-docs
 ```
 
 ## Quick Start
@@ -37,7 +37,7 @@ npm install @corteksa/nestjs-auto-docs
 
 ```typescript
 import { Module } from '@nestjs/common';
-import { AutoDocsModule } from '@corteksa/nestjs-auto-docs';
+import { AutoDocsModule } from '@devabdelrahmansayed/nestjs-auto-docs';
 
 @Module({
   imports: [
@@ -259,7 +259,7 @@ This information appears in the generated documentation automatically.
 
 ## Comparison with Other Tools
 
-| Feature | @corteksa/nestjs-auto-docs | @nestjs/swagger | nest-scramble |
+| Feature | @devabdelrahmansayed/nestjs-auto-docs | @nestjs/swagger | nest-scramble |
 |---------|---------------------------|-----------------|---------------|
 | Zero decorators | ✅ | ❌ | ✅ |
 | Auto-categorization | ✅ | ❌ | ❌ |
@@ -373,8 +373,8 @@ MIT © [Abdelrahman Sayed](https://github.com/DevAbdelrahmanSayed)
 
 ## Support
 
-- 🐛 Issues: [GitHub Issues](https://github.com/corteksa/nestjs-auto-docs/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/corteksa/nestjs-auto-docs/discussions)
+- 🐛 Issues: [GitHub Issues](https://github.com/DevAbdelrahmanSayed/nestjs-auto-docs/issues)
+- 💬 Discussions: [GitHub Discussions](https://github.com/DevAbdelrahmanSayed/nestjs-auto-docs/discussions)
 
 ## Built With
 

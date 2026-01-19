@@ -1,5 +1,5 @@
 {
-  "name": "@corteksa/nestjs-auto-docs",
+  "name": "@devabdelrahmansayed/nestjs-auto-docs",
   "version": "1.0.0",
   "description": "Automatic API documentation generator for NestJS with zero configuration - auto-scans controllers, generates OpenAPI specs, and provides beautiful Scalar UI with versioning support",
   "main": "dist/index.js",
@@ -40,12 +40,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/corteksa/nestjs-auto-docs"
+    "url": "https://github.com/DevAbdelrahmanSayed/nestjs-auto-docs"
   },
   "bugs": {
-    "url": "https://github.com/corteksa/nestjs-auto-docs/issues"
+    "url": "https://github.com/DevAbdelrahmanSayed/nestjs-auto-docs/issues"
   },
-  "homepage": "https://github.com/corteksa/nestjs-auto-docs#readme",
+  "homepage": "https://github.com/DevAbdelrahmanSayed/nestjs-auto-docs#readme",
   "dependencies": {
     "@scalar/api-reference": "^1.25.0",
     "reflect-metadata": "^0.2.2",
