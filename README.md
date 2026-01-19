@@ -146,15 +146,15 @@ AutoDocsModule.forRoot({
   globalPrefix: '/api/v1',
   servers: [
     {
-      url: 'http://localhost:3000/api/v1',
+      url: 'http://localhost:3000',
       description: 'Local Development',
     },
     {
-      url: 'https://staging-api.example.com/api/v1',
+      url: 'https://staging-api.example.com',
       description: 'Staging Environment',
     },
     {
-      url: 'https://api.example.com/api/v1',
+      url: 'https://api.example.com',
       description: 'Production Server',
     },
   ],
