@@ -152,9 +152,244 @@ export class ScalarController {
       font-weight: 600 !important;
       letter-spacing: 0.5px !important;
     }
+
+    /* Custom Domain Panel Styles */
+    #custom-domain-fab {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, ${primaryColor} 0%, ${this.adjustColor(primaryColor, -30)} 100%);
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10000;
+      box-shadow: 0 4px 16px ${this.hexToRgba(primaryColor, 0.4)};
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      border: 2px solid ${darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+    }
+
+    #custom-domain-fab:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 24px ${this.hexToRgba(primaryColor, 0.5)};
+    }
+
+    #custom-domain-fab:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    #panel-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 9999;
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -45%);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+
+    #custom-domain-panel {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: ${darkMode ? '#1e1e1e' : '#ffffff'};
+      border-radius: 16px;
+      padding: 0;
+      width: 90%;
+      max-width: 500px;
+      z-index: 10000;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, ${darkMode ? '0.6' : '0.3'});
+      border: 1px solid ${darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+      animation: slideIn 0.3s ease;
+      overflow: hidden;
+    }
+
+    #custom-domain-panel .panel-header {
+      background: linear-gradient(135deg, ${primaryColor} 0%, ${this.adjustColor(primaryColor, -30)} 100%);
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid ${darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+    }
+
+    #custom-domain-panel .panel-header h3 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    #custom-domain-panel .panel-header button {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    #custom-domain-panel .panel-header button:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    #custom-domain-panel .panel-body {
+      padding: 24px;
+    }
+
+    #custom-domain-panel .panel-body label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: ${darkMode ? '#e0e0e0' : '#333333'};
+      margin-bottom: 8px;
+      margin-top: 16px;
+    }
+
+    #custom-domain-panel .panel-body label:first-child {
+      margin-top: 0;
+    }
+
+    #current-server {
+      padding: 12px 16px;
+      background: ${darkMode ? '#2a2a2a' : '#f5f5f5'};
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: ${primaryColor};
+      border: 1px solid ${darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+      word-break: break-all;
+    }
+
+    #custom-url-input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 2px solid ${darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'};
+      border-radius: 8px;
+      font-size: 14px;
+      background: ${darkMode ? '#2a2a2a' : '#ffffff'};
+      color: ${darkMode ? '#ffffff' : '#333333'};
+      font-family: 'Courier New', monospace;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    #custom-url-input:focus {
+      border-color: ${primaryColor};
+      box-shadow: 0 0 0 3px ${this.hexToRgba(primaryColor, 0.1)};
+    }
+
+    #custom-url-input::placeholder {
+      color: ${darkMode ? '#666666' : '#999999'};
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .panel-actions button {
+      flex: 1;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    #save-custom-url {
+      background: linear-gradient(135deg, ${primaryColor} 0%, ${this.adjustColor(primaryColor, -30)} 100%);
+      color: #ffffff;
+      box-shadow: 0 2px 8px ${this.hexToRgba(primaryColor, 0.3)};
+    }
+
+    #save-custom-url:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px ${this.hexToRgba(primaryColor, 0.4)};
+    }
+
+    #save-custom-url:active {
+      transform: translateY(0);
+    }
+
+    #clear-custom-url {
+      background: ${darkMode ? '#2a2a2a' : '#f5f5f5'};
+      color: ${darkMode ? '#ffffff' : '#333333'};
+      border: 1px solid ${darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'};
+    }
+
+    #clear-custom-url:hover {
+      background: ${darkMode ? '#333333' : '#e0e0e0'};
+    }
   </style>
 </head>
 <body>
+  <!-- Custom Domain Floating Action Button -->
+  <div id="custom-domain-fab" title="Custom Server URL">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="2" y1="12" x2="22" y2="12"/>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+    </svg>
+  </div>
+
+  <!-- Custom Domain Panel Overlay -->
+  <div id="panel-overlay" style="display: none;"></div>
+
+  <!-- Custom Domain Panel -->
+  <div id="custom-domain-panel" style="display: none;">
+    <div class="panel-header">
+      <h3>Custom Server URL</h3>
+      <button id="close-panel" title="Close">&times;</button>
+    </div>
+    <div class="panel-body">
+      <label>Current Server:</label>
+      <div id="current-server">Loading...</div>
+
+      <label>Enter Custom Domain:</label>
+      <input type="url" id="custom-url-input" placeholder="https://api.example.com" />
+
+      <div class="panel-actions">
+        <button id="save-custom-url">Save & Apply</button>
+        <button id="clear-custom-url">Clear Saved URL</button>
+      </div>
+    </div>
+  </div>
+
   <script
     id="api-reference"
     data-url="${specUrl}"
@@ -400,6 +635,107 @@ export class ScalarController {
         console.log('Server URL persistence is disabled in configuration.');
       }
     };
+
+    // Custom Domain Panel Functionality
+    (function initCustomDomainPanel() {
+      const fab = document.getElementById('custom-domain-fab');
+      const panel = document.getElementById('custom-domain-panel');
+      const overlay = document.getElementById('panel-overlay');
+      const closeBtn = document.getElementById('close-panel');
+      const saveBtn = document.getElementById('save-custom-url');
+      const clearBtn = document.getElementById('clear-custom-url');
+      const urlInput = document.getElementById('custom-url-input');
+      const currentServerDiv = document.getElementById('current-server');
+
+      // Function to update current server display
+      function updateCurrentServer() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          try {
+            const url = JSON.parse(saved);
+            currentServerDiv.textContent = url;
+          } catch (e) {
+            currentServerDiv.textContent = 'Default (from config)';
+          }
+        } else {
+          currentServerDiv.textContent = 'Default (from config)';
+        }
+      }
+
+      // Function to close panel
+      function closePanel() {
+        panel.style.display = 'none';
+        overlay.style.display = 'none';
+        urlInput.value = '';
+      }
+
+      // Function to open panel
+      function openPanel() {
+        panel.style.display = 'block';
+        overlay.style.display = 'block';
+        updateCurrentServer();
+        urlInput.focus();
+      }
+
+      // Event listeners
+      fab.addEventListener('click', openPanel);
+      closeBtn.addEventListener('click', closePanel);
+      overlay.addEventListener('click', closePanel);
+
+      // Escape key to close
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && panel.style.display === 'block') {
+          closePanel();
+        }
+      });
+
+      // Save custom URL
+      saveBtn.addEventListener('click', function() {
+        const url = urlInput.value.trim();
+
+        if (!url) {
+          alert('Please enter a URL');
+          return;
+        }
+
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          alert('Please enter a valid URL starting with http:// or https://');
+          return;
+        }
+
+        // Save to localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(url));
+        console.log('Custom server URL saved:', url);
+
+        // Reload page to apply
+        location.reload();
+      });
+
+      // Clear saved URL
+      clearBtn.addEventListener('click', function() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) {
+          alert('No custom URL is currently saved');
+          return;
+        }
+
+        if (confirm('Are you sure you want to clear the saved custom server URL?')) {
+          localStorage.removeItem(STORAGE_KEY);
+          console.log('Custom server URL cleared');
+          location.reload();
+        }
+      });
+
+      // Enter key in input to save
+      urlInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          saveBtn.click();
+        }
+      });
+
+      // Initialize current server display
+      updateCurrentServer();
+    })();
   </script>
 </body>
 </html>
