@@ -392,7 +392,6 @@ export class ScalarController {
 
   <script
     id="api-reference"
-    data-url="${specUrl}"
   ></script>
 
   <script>
@@ -403,16 +402,55 @@ export class ScalarController {
     // Try to load saved server URL from localStorage (if persistence is enabled)
     const savedServerUrl = PERSIST_ENABLED ? localStorage.getItem(STORAGE_KEY) : null;
 
-    var configuration = {
-      theme: '${darkMode ? 'dark' : 'light'}',
-      layout: 'modern',
-      showSidebar: true,
-      hideModels: false,
-      hideDownloadButton: false,
-      darkMode: ${darkMode},
-      ${this.options.baseServerURL ? `baseServerURL: '${this.escapeHtml(this.options.baseServerURL)}',` : ''}
-      ${this.options.hideClientButton !== undefined ? `hideClientButton: ${this.options.hideClientButton},` : ''}
-      customCss: \`
+    // Fetch and modify the spec to include custom server
+    fetch('${specUrl}')
+      .then(function(response) { return response.json(); })
+      .then(function(spec) {
+        // Add custom server URL if it exists
+        if (savedServerUrl) {
+          try {
+            const customUrl = JSON.parse(savedServerUrl);
+            const customServer = { url: customUrl, description: 'Custom Server (saved)' };
+
+            // Ensure servers array exists
+            if (!spec.servers) {
+              spec.servers = [];
+            }
+
+            // Check if custom URL already exists
+            const urlExists = spec.servers.some(function(server) {
+              return server.url === customUrl;
+            });
+
+            // Add custom server at the beginning if it doesn't exist
+            if (!urlExists) {
+              spec.servers.unshift(customServer);
+            }
+          } catch (e) {
+            console.error('Error parsing saved server URL:', e);
+            localStorage.removeItem(STORAGE_KEY);
+          }
+        }
+
+        // Initialize Scalar with the modified spec
+        initializeScalar(spec);
+      })
+      .catch(function(error) {
+        console.error('Failed to load OpenAPI spec:', error);
+      });
+
+    function initializeScalar(spec) {
+      var configuration = {
+        theme: '${darkMode ? 'dark' : 'light'}',
+        layout: 'modern',
+        showSidebar: true,
+        hideModels: false,
+        hideDownloadButton: false,
+        darkMode: ${darkMode},
+        spec: spec,
+        ${this.options.baseServerURL ? `baseServerURL: '${this.escapeHtml(this.options.baseServerURL)}',` : ''}
+        ${this.options.hideClientButton !== undefined ? `hideClientButton: ${this.options.hideClientButton},` : ''}
+        customCss: \`
         .scalar-api-reference {
           --scalar-color-1: ${primaryColor};
           --scalar-color-accent: ${primaryColor};
@@ -540,26 +578,11 @@ export class ScalarController {
           overflow-y: auto !important;
         }
       \`,
-    };
+      };
 
-    // If we have a saved custom server URL, override the servers configuration
-    if (savedServerUrl) {
-      try {
-        const savedUrl = JSON.parse(savedServerUrl);
-        configuration.servers = [
-          {
-            url: savedUrl,
-            description: 'Custom Server (saved)'
-          }
-        ];
-      } catch (e) {
-        // Invalid JSON, clear it
-        localStorage.removeItem(STORAGE_KEY);
-      }
+      var apiReference = document.getElementById('api-reference');
+      apiReference.dataset.configuration = JSON.stringify(configuration);
     }
-
-    var apiReference = document.getElementById('api-reference');
-    apiReference.dataset.configuration = JSON.stringify(configuration);
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@latest"></script>
