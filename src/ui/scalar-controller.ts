@@ -153,8 +153,102 @@ export class ScalarController {
       letter-spacing: 0.5px !important;
     }
 
-    /* Custom Domain Panel Styles */
+    /* Custom Server Section Styles (Integrated) */
+    .custom-server-section {
+      margin: 16px 0;
+      padding: 16px;
+      background: ${darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.03)'};
+      border-radius: 8px;
+      border: 1px solid ${darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+    }
+
+    .custom-server-section h4 {
+      margin: 0 0 12px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: ${darkMode ? '#e0e0e0' : '#333333'};
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .custom-server-section .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .custom-server-section input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid ${darkMode ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.2)'};
+      border-radius: 6px;
+      font-size: 13px;
+      background: ${darkMode ? '#2a2a2a' : '#ffffff'};
+      color: ${darkMode ? '#ffffff' : '#333333'};
+      font-family: 'Courier New', monospace;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .custom-server-section input:focus {
+      border-color: ${primaryColor};
+      box-shadow: 0 0 0 2px ${this.hexToRgba(primaryColor, 0.1)};
+    }
+
+    .custom-server-section input::placeholder {
+      color: ${darkMode ? '#666666' : '#999999'};
+    }
+
+    .custom-server-section button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .custom-server-section button.primary {
+      background: linear-gradient(135deg, ${primaryColor} 0%, ${this.adjustColor(primaryColor, -30)} 100%);
+      color: #ffffff;
+      box-shadow: 0 2px 6px ${this.hexToRgba(primaryColor, 0.3)};
+    }
+
+    .custom-server-section button.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px ${this.hexToRgba(primaryColor, 0.4)};
+    }
+
+    .custom-server-section button.secondary {
+      background: ${darkMode ? '#2a2a2a' : '#f0f0f0'};
+      color: ${darkMode ? '#ffffff' : '#333333'};
+      border: 1px solid ${darkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
+    }
+
+    .custom-server-section button.secondary:hover {
+      background: ${darkMode ? '#333333' : '#e5e5e5'};
+    }
+
+    .custom-server-section .saved-url {
+      font-size: 12px;
+      color: ${primaryColor};
+      font-family: 'Courier New', monospace;
+      padding: 8px 12px;
+      background: ${darkMode ? 'rgba(0, 242, 255, 0.1)' : 'rgba(0, 242, 255, 0.05)'};
+      border-radius: 4px;
+      margin-top: 8px;
+      word-break: break-all;
+      border: 1px dashed ${this.hexToRgba(primaryColor, 0.3)};
+    }
+
+    /* Custom Domain Panel Styles (FAB - Hidden) */
     #custom-domain-fab {
+      display: none !important;
+    }
+
+    #old-custom-domain-fab {
       position: fixed;
       bottom: 24px;
       right: 24px;
@@ -758,6 +852,79 @@ export class ScalarController {
 
       // Initialize current server display
       updateCurrentServer();
+
+      // Hide the FAB - we'll inject UI into Scalar's server selector instead
+      if (fab) fab.style.display = 'none';
+    })();
+
+    // Inject custom domain UI into Scalar's server selector area
+    (function injectCustomDomainUI() {
+      // Wait for Scalar to initialize
+      setTimeout(function checkForScalarUI() {
+        // Try to find Scalar's server selector
+        const scalarContainer = document.querySelector('.scalar-api-reference, [data-proxy-url], .references-classic, .api-client__server');
+
+        if (!scalarContainer) {
+          // Retry if Scalar hasn't loaded yet
+          setTimeout(checkForScalarUI, 500);
+          return;
+        }
+
+        // Create custom domain section
+        const customSection = document.createElement('div');
+        customSection.className = 'custom-server-section';
+        customSection.innerHTML = \`
+          <h4>Custom Server</h4>
+          <div class="input-group">
+            <input type="url"
+                   id="custom-server-input"
+                   placeholder="https://your-api.com"
+                   value="\${savedServerUrl ? JSON.parse(savedServerUrl) : ''}"
+            />
+            <button class="primary" id="apply-custom-server">Add</button>
+            <button class="secondary" id="clear-custom-server">Clear</button>
+          </div>
+          \${savedServerUrl ? \`<div class="saved-url">✓ Using: \${JSON.parse(savedServerUrl)}</div>\` : ''}
+        \`;
+
+        // Try to find the best place to inject
+        const serverSelector = scalarContainer.querySelector('select, [role="combobox"], .server-select');
+
+        if (serverSelector && serverSelector.parentElement) {
+          // Insert after the server selector
+          serverSelector.parentElement.appendChild(customSection);
+        } else {
+          // Fallback: prepend to container
+          scalarContainer.prepend(customSection);
+        }
+
+        // Event handlers
+        document.getElementById('apply-custom-server').addEventListener('click', function() {
+          const input = document.getElementById('custom-server-input');
+          const url = input.value.trim();
+
+          if (!url) {
+            alert('Please enter a server URL');
+            return;
+          }
+
+          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            alert('URL must start with http:// or https://');
+            return;
+          }
+
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(url));
+          location.reload();
+        });
+
+        document.getElementById('clear-custom-server').addEventListener('click', function() {
+          if (confirm('Clear custom server URL?')) {
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload();
+          }
+        });
+
+      }, 1000); // Initial delay to let Scalar load
     })();
   </script>
 </body>
