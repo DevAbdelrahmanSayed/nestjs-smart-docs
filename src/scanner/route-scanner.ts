@@ -99,8 +99,6 @@ export class RouteScanner {
           return undefined;
         }
 
-        console.log(`[AUTO-DOCS] Found @Body parameter with type: ${typeName}`);
-
         // Try to find DTO class
         const dtoClass = this.findDtoClass(typeName);
         if (dtoClass) {
@@ -112,8 +110,6 @@ export class RouteScanner {
         if (inlineDto) {
           return inlineDto;
         }
-
-        console.log(`[AUTO-DOCS] Could not analyze type: ${typeName}`);
       }
     }
 
@@ -155,7 +151,6 @@ export class RouteScanner {
       return inlineDto;
     }
 
-    console.log(`[AUTO-DOCS] Could not analyze return type: ${typeName}`);
     return undefined;
   }
 

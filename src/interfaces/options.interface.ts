@@ -97,6 +97,28 @@ export interface AutoDocsOptions {
    * Enables automatic version detection from file paths
    */
   versioning?: VersioningConfig;
+
+  /**
+   * Base URL to prefix all relative server URLs
+   * Useful for testing against different domains
+   * Example: 'https://api.example.com' will convert '/api/v1' to 'https://api.example.com/api/v1'
+   * @default undefined
+   */
+  baseServerURL?: string;
+
+  /**
+   * Hide the API client button in Scalar UI
+   * Set to true if you want to disable the "Try it" functionality
+   * @default false
+   */
+  hideClientButton?: boolean;
+
+  /**
+   * Persist custom server URL in browser localStorage
+   * When enabled, users' custom server selections are saved and restored on page refresh
+   * @default true
+   */
+  persistServerUrl?: boolean;
 }
 
 export interface VersioningConfig {

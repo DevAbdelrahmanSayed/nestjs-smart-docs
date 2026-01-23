@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { ControllerMetadata } from '../interfaces';
 import { AutoDocsOptions } from '../interfaces/options.interface';
 
+@Injectable()
 export class CategoryGenerator {
   /**
    * Apply category mapping from configuration

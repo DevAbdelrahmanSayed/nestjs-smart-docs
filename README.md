@@ -24,6 +24,7 @@ Stop wasting time writing decorators for every endpoint. This package automatica
 - **🏷️ Smart Categorization** - Organizes endpoints by module hierarchy
 - **✅ Validation Integration** - Extracts class-validator rules automatically
 - **🚀 TypeScript First** - Full type safety with no compromises
+- **🎯 Custom Domain Testing** - Test against any domain directly in the UI without code changes
 
 ## Installation
 
@@ -117,6 +118,37 @@ The documentation will include separate server URLs for each version:
 
 By default, relative paths are used. To add environment-specific URLs, use the `servers` option (see "Configuring Server URLs" below).
 
+## ⚡ NEW: Test Against Any Domain (No Code Required!)
+
+**You can now test your API against any custom domain directly in the documentation UI** - no need to modify your code or redeploy!
+
+### How to Use:
+
+1. Open your documentation at `http://localhost:3000/docs`
+2. Look for the **server dropdown** at the top of the page
+3. Click it and enter any custom URL:
+   - `https://staging-api.example.com`
+   - `https://dev.myapp.com`
+   - `http://localhost:4000`
+   - Any URL you want to test!
+4. Click "Try it" on any endpoint - it will use your custom domain
+5. **Your custom URL is automatically saved** and restored when you refresh the page
+
+### Clear Saved URL:
+
+Open browser console and run:
+```javascript
+clearCustomServer()
+```
+
+This makes it super easy to:
+- ✅ Test against staging environments
+- ✅ Switch between dev/staging/production
+- ✅ Test local backends on different ports
+- ✅ Share the same docs URL with your team (each person can use their own custom domain)
+
+**No configuration needed!** This feature works automatically. Keep reading if you want to set default base URLs in your code.
+
 ## Configuring Server URLs
 
 By default, the package generates relative server URLs (e.g., `/api/v1`). To add your own server URLs for different environments:
@@ -196,6 +228,64 @@ AutoDocsModule.forRoot({
 
 **Note:** When you provide the `servers` option, it overrides the auto-generated servers. If you don't provide it, the package will automatically generate relative URLs based on your `globalPrefix` or `versioning` configuration.
 
+### Advanced Server Configuration
+
+#### Configuring Base Server URL (Optional)
+
+Set a base URL to automatically prefix all relative server paths:
+
+```typescript
+AutoDocsModule.forRoot({
+  title: 'My API',
+  version: '1.0.0',
+  baseServerURL: 'https://api.example.com', // Converts '/api/v1' to 'https://api.example.com/api/v1'
+  versioning: {
+    enabled: true,
+    prefix: '/api',
+  },
+})
+```
+
+#### Pre-configured Server List (Optional)
+
+If you want to hardcode multiple environments in your configuration instead of using the dynamic UI approach:
+
+```typescript
+AutoDocsModule.forRoot({
+  title: 'My API',
+  version: '1.0.0',
+  servers: [
+    { url: 'http://localhost:3000', description: 'Local Development' },
+    { url: 'https://staging-api.example.com', description: 'Staging' },
+    { url: 'https://api.example.com', description: 'Production' },
+  ],
+})
+```
+
+**Note:** Users can always override these with their own custom URL in the dropdown!
+
+#### Control Server URL Persistence
+
+By default, custom URLs entered in the UI are automatically saved. You can disable this:
+
+```typescript
+AutoDocsModule.forRoot({
+  title: 'My API',
+  version: '1.0.0',
+  persistServerUrl: false,    // Disable localStorage saving (custom URLs cleared on refresh)
+})
+```
+
+#### Disable API Testing in Production
+
+```typescript
+AutoDocsModule.forRoot({
+  title: 'My API',
+  version: '1.0.0',
+  hideClientButton: true,    // Hide the "Try it" button
+})
+```
+
 ## Configuration Options
 
 ```typescript
@@ -228,6 +318,9 @@ interface AutoDocsOptions {
     url: string;
     description: string;
   }>;
+  baseServerURL?: string;           // Base URL to prefix relative server URLs
+  hideClientButton?: boolean;       // Hide "Try it" button (default: false)
+  persistServerUrl?: boolean;       // Save custom server URLs in localStorage (default: true)
 
   // UI Theme
   theme?: {

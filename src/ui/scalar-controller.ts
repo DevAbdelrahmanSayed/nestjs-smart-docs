@@ -161,6 +161,13 @@ export class ScalarController {
   ></script>
 
   <script>
+    // Custom server URL persistence
+    const STORAGE_KEY = 'scalar-custom-server-url';
+    const PERSIST_ENABLED = ${this.options.persistServerUrl !== false};
+
+    // Try to load saved server URL from localStorage (if persistence is enabled)
+    const savedServerUrl = PERSIST_ENABLED ? localStorage.getItem(STORAGE_KEY) : null;
+
     var configuration = {
       theme: '${darkMode ? 'dark' : 'light'}',
       layout: 'modern',
@@ -168,6 +175,8 @@ export class ScalarController {
       hideModels: false,
       hideDownloadButton: false,
       darkMode: ${darkMode},
+      ${this.options.baseServerURL ? `baseServerURL: '${this.escapeHtml(this.options.baseServerURL)}',` : ''}
+      ${this.options.hideClientButton !== undefined ? `hideClientButton: ${this.options.hideClientButton},` : ''}
       customCss: \`
         .scalar-api-reference {
           --scalar-color-1: ${primaryColor};
@@ -298,11 +307,100 @@ export class ScalarController {
       \`,
     };
 
+    // If we have a saved custom server URL, override the servers configuration
+    if (savedServerUrl) {
+      try {
+        const savedUrl = JSON.parse(savedServerUrl);
+        configuration.servers = [
+          {
+            url: savedUrl,
+            description: 'Custom Server (saved)'
+          }
+        ];
+      } catch (e) {
+        // Invalid JSON, clear it
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+
     var apiReference = document.getElementById('api-reference');
     apiReference.dataset.configuration = JSON.stringify(configuration);
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@latest"></script>
+
+  <script>
+    // Listen for server changes and persist to localStorage (only if enabled)
+    if (PERSIST_ENABLED) {
+      window.addEventListener('load', function() {
+        // Wait for Scalar to fully initialize
+        setTimeout(function() {
+        // Find the server dropdown/input in the Scalar UI
+        const serverInputs = document.querySelectorAll('input[type="text"]');
+
+        serverInputs.forEach(function(input) {
+          // Check if this looks like a server URL input
+          if (input.value && (input.value.startsWith('http') || input.value.startsWith('/'))) {
+            // Listen for changes
+            input.addEventListener('change', function(e) {
+              const newServerUrl = e.target.value;
+              if (newServerUrl) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(newServerUrl));
+                console.log('Custom server URL saved:', newServerUrl);
+              }
+            });
+
+            input.addEventListener('blur', function(e) {
+              const newServerUrl = e.target.value;
+              if (newServerUrl) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(newServerUrl));
+                console.log('Custom server URL saved:', newServerUrl);
+              }
+            });
+          }
+        });
+
+        // Also monitor for dynamically added server selectors
+        const observer = new MutationObserver(function(mutations) {
+          mutations.forEach(function(mutation) {
+            mutation.addedNodes.forEach(function(node) {
+              if (node.nodeType === 1) { // Element node
+                const inputs = node.querySelectorAll ? node.querySelectorAll('input[type="text"]') : [];
+                inputs.forEach(function(input) {
+                  if (input.value && (input.value.startsWith('http') || input.value.startsWith('/'))) {
+                    input.addEventListener('change', function(e) {
+                      const newServerUrl = e.target.value;
+                      if (newServerUrl) {
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(newServerUrl));
+                        console.log('Custom server URL saved:', newServerUrl);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          });
+        });
+
+        observer.observe(document.body, {
+          childList: true,
+          subtree: true
+        });
+        }, 1000); // Wait 1 second for Scalar to initialize
+      });
+    }
+
+    // Helper function to clear saved server URL (available in browser console)
+    window.clearCustomServer = function() {
+      if (PERSIST_ENABLED) {
+        localStorage.removeItem(STORAGE_KEY);
+        console.log('Custom server URL cleared. Refresh the page to see default servers.');
+        location.reload();
+      } else {
+        console.log('Server URL persistence is disabled in configuration.');
+      }
+    };
+  </script>
 </body>
 </html>
     `.trim();

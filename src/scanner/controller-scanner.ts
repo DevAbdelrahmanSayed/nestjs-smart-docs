@@ -1,9 +1,11 @@
+import { Injectable } from '@nestjs/common';
 import { Project, SourceFile, ClassDeclaration, Decorator, SyntaxKind } from 'ts-morph';
 import * as path from 'path';
 import { ControllerMetadata } from '../interfaces';
 import { RouteScanner } from './route-scanner';
 import { ModuleScanner } from './module-scanner';
 
+@Injectable()
 export class ControllerScanner {
   private project: Project;
   private routeScanner: RouteScanner;
@@ -114,7 +116,6 @@ export class ControllerScanner {
         guards,
       };
     } catch (error) {
-      console.warn(`Failed to parse controller in ${sourceFile.getFilePath()}:`, error);
       return null;
     }
   }
@@ -161,7 +162,6 @@ export class ControllerScanner {
 
     // Fallback to file path detection if module not found
     if (!category) {
-      console.warn(`Module not found for controller ${controllerName}, falling back to file path detection`);
       const sourceFile = sourceFiles.find(sf => {
         const classes = sf.getClasses();
         return classes.some(c => c.getName() === controllerName);

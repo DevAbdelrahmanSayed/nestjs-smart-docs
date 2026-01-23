@@ -1,7 +1,9 @@
+import { Injectable } from '@nestjs/common';
 import { ControllerMetadata, DtoMetadata, PropertyMetadata, TypeMetadata, ValidatorMetadata, RouteMetadata, ParamMetadata } from '../interfaces';
 import { OpenApiSpec, PathItemObject, OperationObject, ParameterObject, RequestBodyObject, ResponseObject, SchemaObject, TagObject } from '../interfaces/openapi.interface';
 import { AutoDocsOptions } from '../interfaces/options.interface';
 
+@Injectable()
 export class OpenApiGenerator {
   private schemas: Map<string, SchemaObject> = new Map();
   private tags: Map<string, TagObject> = new Map();
@@ -418,8 +420,10 @@ export class OpenApiGenerator {
     // If no servers generated, return a relative path server
     if (servers.length === 0) {
       servers.push({
-        url: '/',
-        description: 'Current Server',
+        url: options.baseServerURL || '/',
+        description: options.baseServerURL
+          ? 'Base Server'
+          : 'Current Server (editable in dropdown)',
       });
     }
 

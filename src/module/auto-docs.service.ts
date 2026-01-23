@@ -13,15 +13,12 @@ export class AutoDocsService {
   private controllers: ControllerMetadata[] = [];
   private lastScanTime: Date | null = null;
 
-  private controllerScanner: ControllerScanner;
-  private openApiGenerator: OpenApiGenerator;
-  private categoryGenerator: CategoryGenerator;
-
-  constructor(private readonly options: AutoDocsOptions) {
-    this.controllerScanner = new ControllerScanner(options.sourcePath || 'src');
-    this.openApiGenerator = new OpenApiGenerator();
-    this.categoryGenerator = new CategoryGenerator();
-  }
+  constructor(
+    private readonly options: AutoDocsOptions,
+    private readonly controllerScanner: ControllerScanner,
+    private readonly openApiGenerator: OpenApiGenerator,
+    private readonly categoryGenerator: CategoryGenerator,
+  ) {}
 
   /**
    * Initialize the service (scan controllers and generate spec)

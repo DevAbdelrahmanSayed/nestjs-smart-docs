@@ -414,4 +414,123 @@ describe('OpenApiGenerator', () => {
       expect(spec.paths).toHaveProperty('api/v1/admin/{userId}/resource/{resourceId}');
     });
   });
+
+  describe('baseServerURL configuration', () => {
+    it('should use baseServerURL when no servers are generated', () => {
+      const options: AutoDocsOptions = {
+        title: 'Test API',
+        version: '1.0.0',
+        baseServerURL: 'https://api.example.com',
+      };
+
+      const spec = generator.generate([], options);
+
+      expect(spec.servers).toHaveLength(1);
+      expect(spec.servers[0]).toEqual({
+        url: 'https://api.example.com',
+        description: 'Base Server',
+      });
+    });
+
+    it('should not override manually configured servers', () => {
+      const options: AutoDocsOptions = {
+        title: 'Test API',
+        version: '1.0.0',
+        baseServerURL: 'https://api.example.com',
+        servers: [
+          { url: 'https://custom.example.com', description: 'Custom' },
+        ],
+      };
+
+      const spec = generator.generate([], options);
+
+      expect(spec.servers).toHaveLength(1);
+      expect(spec.servers[0].url).toBe('https://custom.example.com');
+    });
+
+    it('should provide helpful description when no baseServerURL', () => {
+      const options: AutoDocsOptions = {
+        title: 'Test API',
+        version: '1.0.0',
+      };
+
+      const spec = generator.generate([], options);
+
+      expect(spec.servers[0].description).toContain('editable');
+    });
+
+    it('should work with versioning enabled', () => {
+      const controllers: ControllerMetadata[] = [
+        {
+          name: 'AdminController',
+          path: 'admin',
+          filePath: 'src/api/v1/admin/admin.controller.ts',
+          category: 'Admin',
+          version: 'v1',
+          routes: [
+            {
+              name: 'getProfile',
+              httpMethod: 'GET',
+              path: 'profile',
+              fullPath: '/admin/profile',
+              isPublic: false,
+            } as RouteMetadata,
+          ],
+        },
+      ];
+
+      const options: AutoDocsOptions = {
+        title: 'Test API',
+        version: '1.0.0',
+        baseServerURL: 'https://api.example.com',
+        versioning: {
+          enabled: true,
+          prefix: '/api',
+        },
+      };
+
+      const spec = generator.generate(controllers, options);
+
+      // Should generate versioned servers without baseServerURL prefix
+      // (baseServerURL only applies when no servers are generated)
+      expect(spec.servers).toHaveLength(1);
+      expect(spec.servers[0].url).toBe('/api/v1');
+    });
+
+    it('should use baseServerURL when versioning is enabled but no versions detected', () => {
+      const controllers: ControllerMetadata[] = [
+        {
+          name: 'HealthController',
+          path: 'health',
+          filePath: 'src/health/health.controller.ts',
+          category: 'Health',
+          routes: [
+            {
+              name: 'check',
+              httpMethod: 'GET',
+              path: '',
+              fullPath: '/health',
+              isPublic: true,
+            } as RouteMetadata,
+          ],
+        },
+      ];
+
+      const options: AutoDocsOptions = {
+        title: 'Test API',
+        version: '1.0.0',
+        baseServerURL: 'https://api.example.com',
+        versioning: {
+          enabled: true,
+          prefix: '/api',
+        },
+      };
+
+      const spec = generator.generate(controllers, options);
+
+      // Should use baseServerURL as fallback
+      expect(spec.servers).toHaveLength(1);
+      expect(spec.servers[0].url).toBe('https://api.example.com');
+    });
+  });
 });

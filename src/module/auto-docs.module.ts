@@ -2,6 +2,9 @@ import { DynamicModule, Module, OnModuleInit } from '@nestjs/common';
 import { AutoDocsService } from './auto-docs.service';
 import { ScalarController } from '../ui/scalar-controller';
 import { AutoDocsOptions } from '../interfaces/options.interface';
+import { ControllerScanner } from '../scanner/controller-scanner';
+import { OpenApiGenerator } from '../generators/openapi-generator';
+import { CategoryGenerator } from '../generators/category-generator';
 
 @Module({})
 export class AutoDocsModule implements OnModuleInit {
@@ -37,10 +40,25 @@ export class AutoDocsModule implements OnModuleInit {
           useValue: mergedOptions,
         },
         {
-          provide: AutoDocsService,
-          useFactory: () => {
-            return new AutoDocsService(mergedOptions);
+          provide: ControllerScanner,
+          useFactory: (options: AutoDocsOptions) => {
+            return new ControllerScanner(options.sourcePath || 'src');
           },
+          inject: ['AUTO_DOCS_OPTIONS'],
+        },
+        OpenApiGenerator,
+        CategoryGenerator,
+        {
+          provide: AutoDocsService,
+          useFactory: (
+            options: AutoDocsOptions,
+            scanner: ControllerScanner,
+            generator: OpenApiGenerator,
+            categoryGen: CategoryGenerator,
+          ) => {
+            return new AutoDocsService(options, scanner, generator, categoryGen);
+          },
+          inject: ['AUTO_DOCS_OPTIONS', ControllerScanner, OpenApiGenerator, CategoryGenerator],
         },
       ],
       exports: [AutoDocsService],
@@ -64,11 +82,25 @@ export class AutoDocsModule implements OnModuleInit {
           inject: options.inject || [],
         },
         {
-          provide: AutoDocsService,
+          provide: ControllerScanner,
           useFactory: (opts: AutoDocsOptions) => {
-            return new AutoDocsService(opts);
+            return new ControllerScanner(opts.sourcePath || 'src');
           },
           inject: ['AUTO_DOCS_OPTIONS'],
+        },
+        OpenApiGenerator,
+        CategoryGenerator,
+        {
+          provide: AutoDocsService,
+          useFactory: (
+            opts: AutoDocsOptions,
+            scanner: ControllerScanner,
+            generator: OpenApiGenerator,
+            categoryGen: CategoryGenerator,
+          ) => {
+            return new AutoDocsService(opts, scanner, generator, categoryGen);
+          },
+          inject: ['AUTO_DOCS_OPTIONS', ControllerScanner, OpenApiGenerator, CategoryGenerator],
         },
       ],
       exports: [AutoDocsService],

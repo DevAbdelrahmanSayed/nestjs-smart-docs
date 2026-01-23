@@ -1,6 +1,6 @@
 {
   "name": "nestjs-smart-docs",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Automatic API documentation generator for NestJS with zero configuration - auto-scans controllers, generates OpenAPI specs, and provides beautiful Scalar UI with versioning support",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
